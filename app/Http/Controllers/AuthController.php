@@ -98,4 +98,9 @@ class AuthController extends Controller
 
         // Falta criar a parte de validação por email
     }
+
+    public function user()
+    {
+        return auth()->user()->pontos()->get(); // So para testar
+    }
 }
