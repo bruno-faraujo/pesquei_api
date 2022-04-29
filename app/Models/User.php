@@ -41,4 +41,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+    public function pontos()
+    {
+        return $this->hasMany(Ponto::class);
+    }
+
+    /**
+     * Get the user's most recent point.
+     */
+    public function ultimoPonto()
+    {
+        return $this->hasOne(Ponto::class)->latestOfMany();
+    }
 }
