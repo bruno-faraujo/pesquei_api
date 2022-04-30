@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PontoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +28,12 @@ Route::post('register', [AuthController::class, 'register']);
  */
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user', [AuthController::class, 'user']);
+    Route::post('user', [AuthController::class, 'user']);
+
+    Route::get('pontos', [PontoController::class, 'getPontos']);
+    Route::get('ponto/{id}', [PontoController::class, 'getPonto']);
+    Route::post('novo_ponto', [PontoController::class, 'novoPonto']);
+    Route::post('update_ponto/{id}', [PontoController::class, 'updatePonto']);
+    Route::post('delete_ponto/{id}', [PontoController::class, 'deletePonto']);
+
 });
