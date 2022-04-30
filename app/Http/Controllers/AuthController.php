@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /** Realiza o login de um usuário
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         /*
@@ -55,8 +59,9 @@ class AuthController extends Controller
         ]);
     }
 
-    /*
-     * Realiza o logout do usuário e exclui os tokens de acesso
+
+    /** Realiza o logout do usuário e exclui os tokens de acesso
+     * @return \Illuminate\Http\JsonResponse
      */
     public function logout()
     {
@@ -65,6 +70,10 @@ class AuthController extends Controller
     }
 
 
+    /** Cria um novo usuário
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register (Request $request)
     {
         /*
@@ -99,8 +108,12 @@ class AuthController extends Controller
         // Falta criar a parte de validação por email
     }
 
-    public function user()
+    /** Retorna informações do usuário autenticado
+     * @param Request $request
+     * @return mixed
+     */
+    public function user(Request $request)
     {
-        return auth()->user()->pontos()->get(); // So para testar
+        return $request->user();
     }
 }
