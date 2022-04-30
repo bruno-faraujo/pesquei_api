@@ -9,6 +9,12 @@ class Ponto extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nome',
+        'latitude',
+        'longitude',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -16,7 +22,7 @@ class Ponto extends Model
 
     public function peixes()
     {
-        return $this->belongsToMany(Peixe::class);
+        return $this->belongsToMany(Peixe::class)->withTimestamps();
     }
 
     public function fotos()
