@@ -15,7 +15,7 @@ class PontoController extends Controller
     public function getPontos()
     {
         $pontos = auth()->user()->pontos()->get();
-        return response()->json($pontos);
+        return response()->json($pontos, 200);
     }
 
     /**
@@ -32,7 +32,7 @@ class PontoController extends Controller
         {
             return response()->json(['error' => 'Ponto inválido'], 406);
         }
-        return response()->json($ponto);
+        return response()->json($ponto, 200);
 
     }
 
@@ -63,7 +63,7 @@ class PontoController extends Controller
                     $ponto->longitude = $request->longitude;
                     auth()->user()->pontos()->save($ponto);
 
-                    return response()->json($ponto);
+                    return response()->json($ponto, 201);
                 }
 
                 return response()->json(['error' => 'Já existe um ponto cadastrado com as coordenadas informadas'], 406);
@@ -86,7 +86,7 @@ class PontoController extends Controller
         }
         $ponto->update($request->all());
 
-        return response()->json($ponto);
+        return response()->json($ponto, 200);
     }
 
     /**
