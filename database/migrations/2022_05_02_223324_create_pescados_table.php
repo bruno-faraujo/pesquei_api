@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('peixe_ponto', function (Blueprint $table) {
+        Schema::create('pescados', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ponto_id');
             $table->foreignId('peixe_id');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('pescados');
     }
 };

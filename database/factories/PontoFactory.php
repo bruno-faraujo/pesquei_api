@@ -17,7 +17,7 @@ class PontoFactory extends Factory
     public function definition()
     {
         return [
-            'nome' => $this->faker->colorName(),
+            'nome' => $this->faker->city(),
             'latitude' => $this->faker->latitude(),
             'longitude' =>  $this->faker->longitude(),
             'user_id' => 1

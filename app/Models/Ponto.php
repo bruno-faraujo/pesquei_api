@@ -20,13 +20,9 @@ class Ponto extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function peixes()
+    public function pescados()
     {
-        return $this->belongsToMany(Peixe::class)->withTimestamps();
+        return $this->hasMany(Pescado::class);
     }
 
-    public function fotos()
-    {
-        return $this->hasMany(Foto::class);
-    }
 }

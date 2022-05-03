@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FotoController;
+use App\Http\Controllers\PescadoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PontoController;
@@ -31,9 +33,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user', [AuthController::class, 'user']);
 
     Route::get('pontos', [PontoController::class, 'getPontos']);
+    Route::get('ultimo_ponto', [PontoController::class, 'ultimoPonto']);
     Route::get('ponto/{id}', [PontoController::class, 'getPonto']);
     Route::post('novo_ponto', [PontoController::class, 'novoPonto']);
     Route::post('update_ponto/{id}', [PontoController::class, 'updatePonto']);
     Route::post('delete_ponto/{id}', [PontoController::class, 'deletePonto']);
+
+    Route::post('novo_pescado', [PescadoController::class, 'novoPescado']);
+
+    Route::post('nova_foto', [FotoController::class, 'novaFoto']);
 
 });

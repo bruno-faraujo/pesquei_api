@@ -19,6 +19,22 @@ class PontoController extends Controller
     }
 
     /**
+     * Retorna o ponto mais recente (último)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ultimoPonto()
+    {
+        try {
+            $ultimoPonto = auth()->user()->ultimoPonto()->firstOrFail();
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Ponto inválido'], 406);
+        }
+        return response()->json($ultimoPonto, 200);
+    }
+
+    /**
      * Retorna um ponto do usuário a partir do id
      * @param $id
      * @return \Illuminate\Http\JsonResponse
@@ -105,9 +121,21 @@ class PontoController extends Controller
             return response()->json(['error' => 'Ponto inválido'], 406);
         }
 
+        foreach ($ponto->pescados()->get() as $pescado)
+        {
+            foreach ($pescado->fotos()->get() as $foto)
+            {
+                // Apaga a foto
+                $foto->delete();
+            }
+            // Apaga o pescado
+            $pescado->delete();
+        }
+        // Finalmente apaga o ponto
         $ponto->delete();
 
         return response()->json(['message' => 'O ponto foi apagado com sucesso'], 200);
 
     }
+
 }

@@ -15,9 +15,8 @@ return new class extends Migration
     {
         Schema::create('fotos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('pescado_id');
             $table->string('path');
-            $table->foreignId('ponto_id');
-            $table->foreignId('peixe_id');
             $table->timestamps();
         });
     }

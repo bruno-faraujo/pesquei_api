@@ -9,13 +9,9 @@ class Foto extends Model
 {
     use HasFactory;
 
-    public function ponto()
+    public function pescado()
     {
-        return $this->belongsTo(Ponto::class);
+        return $this->belongsTo(Pescado::class);
     }
 
-    public function peixe()
-    {
-        return $this->belongsTo(Peixe::class);
-    }
 }

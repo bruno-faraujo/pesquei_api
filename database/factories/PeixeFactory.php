@@ -17,8 +17,8 @@ class PeixeFactory extends Factory
     public function definition()
     {
         return [
-            'nome' => $this->faker->name(),
-            'nome_cientifico' => $this->faker->month() . ' ' . $this->faker->colorName(),
+            'nome' => $this->faker->streetName(),
+            'nome_cientifico' => $this->faker->firstNameFemale() . ' ' . $this->faker->colorName(),
             'habitat' =>  'Água doce',
         ];
     }
