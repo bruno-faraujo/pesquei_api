@@ -39,8 +39,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('update_ponto/{id}', [PontoController::class, 'updatePonto']);
     Route::post('delete_ponto/{id}', [PontoController::class, 'deletePonto']);
 
+    Route::get('ponto/{ponto_id}/pescados', [PescadoController::class, 'getPescados']);
+    Route::get('ponto/{ponto_id}/pescado/{pescado_id}', [PescadoController::class, 'getPescado']);
+    Route::post('ponto/{ponto_id}/pescado_update/{pescado_id}', [PescadoController::class, 'updatePescado']);
+    Route::post('ponto/{ponto_id}/pescado_delete/{pescado_id}', [PescadoController::class, 'deletePescado']);
     Route::post('novo_pescado', [PescadoController::class, 'novoPescado']);
 
+    Route::get('ponto/{ponto_id}/pescado/{pescado_id}/fotos', [FotoController::class, 'getFotos']);
+    Route::get('ponto/{ponto_id}/pescado/{pescado_id}/foto/{foto_id}', [FotoController::class, 'getFoto']);
+    Route::post('ponto/{ponto_id}/pescado/{pescado_id}/foto_delete/{foto_id}', [FotoController::class, 'deleteFoto']);
+    Route::post('ponto/{ponto_id}/pescado/{pescado_id}/foto_update/{foto_id}', [FotoController::class, 'updateFoto']);
     Route::post('nova_foto', [FotoController::class, 'novaFoto']);
 
 });

@@ -19,6 +19,8 @@ class PescadoFactory extends Factory
         return [
             'ponto_id' => 1,
             'peixe_id' => rand(1,15),
+            'comprimento' => rand(18,125),
+            'peso' => rand(100,2150)
         ];
     }
 }

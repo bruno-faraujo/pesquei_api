@@ -15,6 +15,10 @@ class PontoController extends Controller
     public function getPontos()
     {
         $pontos = auth()->user()->pontos()->get();
+        if ($pontos->isEmpty()) {
+            return response()->json(['error' => 'Nenhum ponto encontrado'], 400);
+        }
+
         return response()->json($pontos, 200);
     }
 
@@ -117,7 +121,6 @@ class PontoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-
             return response()->json(['error' => 'Ponto inválido'], 406);
         }
 
@@ -135,7 +138,6 @@ class PontoController extends Controller
         $ponto->delete();
 
         return response()->json(['message' => 'O ponto foi apagado com sucesso'], 200);
-
     }
 
 }

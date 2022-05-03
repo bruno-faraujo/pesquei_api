@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('ponto_id');
             $table->foreignId('peixe_id');
+            $table->integer('comprimento')->nullable(); // centimetros
+            $table->integer('peso')->nullable(); // gramas
             $table->timestamps();
         });
     }

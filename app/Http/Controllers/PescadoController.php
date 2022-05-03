@@ -4,22 +4,103 @@ namespace App\Http\Controllers;
 
 use App\Models\Peixe;
 use App\Models\Pescado;
-use App\Models\Ponto;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class PescadoController extends Controller
 {
+    public function getPescados($ponto_id)
+    {
+        try {
+            $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Requisição inválida'], 400);
+        }
+
+        return response()->json($ponto->pescados()->get());
+    }
+
+    public function getPescado($ponto_id, $pescado_id)
+    {
+        try {
+            $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
+            $pescado = $ponto->pescados()->findOrFail($pescado_id);
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Requisição inválida'], 400);
+        }
+
+        return response()->json($pescado);
+
+    }
+
     public function novoPescado(Request $request)
     {
-        $ponto = auth()->user()->pontos()->find($request->ponto_id);
-        $peixe = Peixe::find($request->peixe_id);
+        /*
+        * Validação dos campos ponto_id e pescado_id
+         */
+        $request->validate([
+            'ponto_id' => 'required|integer',
+            'peixe_id' => 'required|integer',
+            'comprimento' => 'integer',
+            'peso' => 'integer'
+        ]);
+
+        try {
+            $ponto = auth()->user()->pontos()->findOrFail($request->ponto_id);
+            $peixe = Peixe::findOrFail($request->peixe_id);
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Requisição inválida'], 400);
+        }
 
         $pescado = new Pescado();
-
         $pescado->ponto()->associate($ponto);
         $pescado->peixe()->associate($peixe);
         $pescado->save();
 
-        return response()->json($pescado);
+        return response()->json(['message' => 'Pescado cadastrado com sucesso'], 201);
+    }
+
+    public function updatePescado(Request $request, $ponto_id, $pescado_id)
+    {
+        try {
+            $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
+            $pescado = $ponto->pescados()->findOrFail($pescado_id);
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Ponto inválido'], 406);
+        }
+        $pescado->update($request->all());
+
+        return response()->json($pescado, 200);
+    }
+
+    public function deletePescado($ponto_id, $pescado_id)
+    {
+        try {
+            $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
+            $pescado = $ponto->pescado()->findOrFail($pescado_id);
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['error' => 'Requisição inválida'], 406);
+        }
+
+        // Apaga as fotos
+        foreach ($pescado->fotos()->get() as $foto)
+        {
+            $foto->delete();
+        }
+
+        // Apaga o pescado
+        $pescado->delete();
+
+        return response()->json(['message' => 'O pescado foi apagado com sucesso'], 200);
     }
 }
