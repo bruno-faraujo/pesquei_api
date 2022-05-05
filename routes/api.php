@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('novo_pescado', [PescadoController::class, 'novoPescado']);
 
     Route::get('ponto/{ponto_id}/pescado/{pescado_id}/fotos', [FotoController::class, 'getFotos']);
-    Route::get('ponto/{ponto_id}/pescado/{pescado_id}/foto/{foto_id}', [FotoController::class, 'getFoto']);
+    Route::get('ponto/{ponto_id}/pescado/{pescado_id}/foto/{media_id}', [FotoController::class, 'getFoto']);
     Route::post('ponto/{ponto_id}/pescado/{pescado_id}/foto_delete/{foto_id}', [FotoController::class, 'deleteFoto']);
     Route::post('ponto/{ponto_id}/pescado/{pescado_id}/foto_update/{foto_id}', [FotoController::class, 'updateFoto']);
     Route::post('nova_foto', [FotoController::class, 'novaFoto']);
