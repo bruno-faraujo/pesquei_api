@@ -2,50 +2,72 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Foto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class FotoController extends Controller
 {
+    protected function replaceOriginalImage(Media $media)
+    {
+        $fotoOriginal = public_path('storage\\'.$media->id.'\\'.$media->file_name);
+        $fotoOtimizada = public_path('storage\\'.$media->id.'\\conversions\\'.$media->name.'-foto.jpg');
+
+       if (copy($fotoOtimizada, $fotoOriginal) && unlink($fotoOtimizada))
+       {
+           $media->size = filesize(public_path('storage\\'.$media->id.'\\'.$media->file_name));
+           $media->save();
+
+           return true;
+       }
+       return false;
+    }
+
+
     public function getFotos($ponto_id, $pescado_id)
     {
         try {
             $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
-            $pescado = $ponto->findOrFail($pescado_id);
+            $pescado = $ponto->pescados()->findOrFail($pescado_id);
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+           return response()->json(['error' => 'Requisição inválida'], 400);
         }
 
-        return response()->json($pescado->fotos()->get());
+        return $pescado->getMedia()->all();
+
     }
 
-    public function getFoto($ponto_id, $pescado_id, $foto_id)
+    public function getFoto($ponto_id, $pescado_id, $media_id)
     {
         try {
             $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
             $pescado = $ponto->pescados()->findOrFail($pescado_id);
-            $foto = $pescado->fotos()->findOrFail($foto_id);
+            $media = $pescado->getMedia()->find($media_id);
         }
         catch (ModelNotFoundException)
         {
             return response()->json(['error' => 'Requisição inválida'], 400);
         }
 
-        return response()->json($foto);
+        if (is_null($media))
+        {
+            return response()->json(['error' => 'Requisição inválida'], 400);
+        }
+
+        return $media;
     }
 
     public function novaFoto(Request $request)
     {
         /*
-        * Validação dos campos ponto_id e pescado_id
+        * Validação dos campos
          */
         $request->validate([
             'ponto_id' => 'required|integer',
             'pescado_id' => 'required|integer',
-            'path' => 'required|string'
+            'foto' => 'required|size:10000|mimes:jpeg,png'
         ]);
 
         try {
@@ -57,14 +79,21 @@ class FotoController extends Controller
             return response()->json(['error' => 'Requisição inválida'], 400);
         }
 
-        $foto = new Foto();
-        $foto->pescado()->associate($pescado);
-        $foto->path = $request->path;
-        $foto->save();
+        $nomeFoto = time();
 
-        return response()->json(['message' => 'Foto cadastrada com sucesso'], 201);
+        $pescado->addMediaFromRequest('foto')->usingName($nomeFoto)->usingFileName($nomeFoto.'.jpg')->toMediaCollection();
+
+        $novaFoto = $pescado->media()->latest()->first();
+
+        if ($this->replaceOriginalImage($novaFoto))
+        {
+            return response()->json(['message' => 'Foto cadastrada com sucesso'], 201);
+        }
+
+        return response()->json(['error' => 'Erro no processamento da foto'], 403);
     }
 
+    //falta concluir
     public function updateFoto($ponto_id, $pescado_id, $foto_id, Request $request)
     {
         $request->validate([
@@ -84,6 +113,7 @@ class FotoController extends Controller
         return response()->json($foto, 200);
     }
 
+    //falta concluir
     public function deleteFoto($ponto_id, $pescado_id, $foto_id)
     {
         try {
