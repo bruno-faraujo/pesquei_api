@@ -67,7 +67,7 @@ class FotoController extends Controller
         $request->validate([
             'ponto_id' => 'required|integer',
             'pescado_id' => 'required|integer',
-            'foto' => 'required|size:10000|mimes:jpeg,png'
+            'foto' => 'required|mimes:jpeg,png|max:100000'
         ]);
 
         try {
@@ -93,7 +93,7 @@ class FotoController extends Controller
         return response()->json(['error' => 'Erro no processamento da foto'], 403);
     }
 
-    //falta concluir
+    //falta concluir - talvez essa função não seja necessária
     public function updateFoto($ponto_id, $pescado_id, $foto_id, Request $request)
     {
         $request->validate([
@@ -113,19 +113,24 @@ class FotoController extends Controller
         return response()->json($foto, 200);
     }
 
-    //falta concluir
-    public function deleteFoto($ponto_id, $pescado_id, $foto_id)
+    public function deleteFoto($ponto_id, $pescado_id, $media_id)
     {
         try {
             $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
-            $pescado = $ponto->pescado()->findOrFail($pescado_id);
-            $foto = $pescado->fotos()->findOrFail($foto_id);
+            $pescado = $ponto->pescados()->findOrFail($pescado_id);
+            $media = $pescado->getMedia()->find($media_id);
         }
         catch (ModelNotFoundException)
         {
             return response()->json(['error' => 'Requisição inválida'], 406);
         }
-        $foto->delete();
+
+        if (is_null($media))
+        {
+            return response()->json(['error' => 'Requisição inválida'], 400);
+        }
+
+        $media->delete();
 
         return response()->json(['message' => 'A foto foi apagada com sucesso'], 200);
     }

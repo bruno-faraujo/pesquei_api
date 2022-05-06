@@ -93,7 +93,7 @@ class PescadoController extends Controller
         }
 
         // Apaga as fotos
-        foreach ($pescado->fotos()->get() as $foto)
+        foreach ($pescado->getMedia()->all() as $foto)
         {
             $foto->delete();
         }
