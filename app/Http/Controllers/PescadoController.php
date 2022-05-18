@@ -16,7 +16,7 @@ class PescadoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         return response()->json($ponto->pescados()->get());
@@ -30,7 +30,7 @@ class PescadoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         return response()->json($pescado);
@@ -55,7 +55,7 @@ class PescadoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         $pescado = new Pescado();
@@ -74,7 +74,7 @@ class PescadoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Ponto inválido'], 406);
+            return response()->json(['message' => 'Ponto inválido'], 406);
         }
         $pescado->update($request->all());
 
@@ -89,7 +89,7 @@ class PescadoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 406);
+            return response()->json(['message' => 'Requisição inválida'], 406);
         }
 
         // Apaga as fotos

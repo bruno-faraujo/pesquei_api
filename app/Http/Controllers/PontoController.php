@@ -16,7 +16,7 @@ class PontoController extends Controller
     {
         $pontos = auth()->user()->pontos()->get();
         if ($pontos->isEmpty()) {
-            return response()->json(['error' => 'Nenhum ponto encontrado'], 400);
+            return response()->json(['message' => 'Nenhum ponto encontrado'], 400);
         }
 
         return response()->json($pontos, 200);
@@ -33,7 +33,7 @@ class PontoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Ponto inválido'], 406);
+            return response()->json(['message' => 'Ponto inválido'], 406);
         }
         return response()->json($ultimoPonto, 200);
     }
@@ -50,7 +50,7 @@ class PontoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Ponto inválido'], 406);
+            return response()->json(['message' => 'Ponto inválido'], 406);
         }
         return response()->json($ponto, 200);
 
@@ -86,7 +86,7 @@ class PontoController extends Controller
                     return response()->json($ponto, 201);
                 }
 
-                return response()->json(['error' => 'Já existe um ponto cadastrado com as coordenadas informadas'], 406);
+                return response()->json(['message' => 'Já existe um ponto cadastrado com as coordenadas informadas'], 406);
     }
 
     /**
@@ -102,7 +102,7 @@ class PontoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Ponto inválido'], 406);
+            return response()->json(['message' => 'Ponto inválido'], 406);
         }
         $ponto->update($request->all());
 
@@ -121,7 +121,7 @@ class PontoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Ponto inválido'], 406);
+            return response()->json(['message' => 'Ponto inválido'], 406);
         }
 
         foreach ($ponto->pescados()->get() as $pescado)

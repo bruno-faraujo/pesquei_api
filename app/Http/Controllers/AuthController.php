@@ -33,7 +33,7 @@ class AuthController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'E-mail não encontrado na base de dados.'], 404);
+            return response()->json(['message' => 'E-mail não encontrado na base de dados.'], 401);
         }
 
         /*
@@ -43,7 +43,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ])) {
-            return response()->json('Credenciais inválidas', 401);
+            return response()->json(['message' => 'Credenciais inválidas'], 401);
         }
 
         /*
@@ -63,9 +63,10 @@ class AuthController extends Controller
     /** Realiza o logout do usuário e exclui os tokens de acesso
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
+        Auth::guard('web')->logout();
         return response()->json(['message' => 'Usuário desconectado com sucesso.'], 200);
     }
 
@@ -100,6 +101,7 @@ class AuthController extends Controller
          */
         $token = $user->createToken('RegisterToken')->plainTextToken;
         return response()->json([
+            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'token' => $token

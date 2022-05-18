@@ -32,7 +32,7 @@ class FotoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-           return response()->json(['error' => 'Requisição inválida'], 400);
+           return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         return $pescado->getMedia()->all();
@@ -48,12 +48,12 @@ class FotoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         if (is_null($media))
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         return $media;
@@ -76,7 +76,7 @@ class FotoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         $nomeFoto = time();
@@ -90,7 +90,7 @@ class FotoController extends Controller
             return response()->json(['message' => 'Foto cadastrada com sucesso'], 201);
         }
 
-        return response()->json(['error' => 'Erro no processamento da foto'], 403);
+        return response()->json(['message' => 'Erro no processamento da foto'], 403);
     }
 
     //falta concluir - talvez essa função não seja necessária
@@ -106,7 +106,7 @@ class FotoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 406);
+            return response()->json(['message' => 'Requisição inválida'], 406);
         }
         $foto->update($request->all());
 
@@ -122,12 +122,12 @@ class FotoController extends Controller
         }
         catch (ModelNotFoundException)
         {
-            return response()->json(['error' => 'Requisição inválida'], 406);
+            return response()->json(['message' => 'Requisição inválida'], 406);
         }
 
         if (is_null($media))
         {
-            return response()->json(['error' => 'Requisição inválida'], 400);
+            return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
         $media->delete();
