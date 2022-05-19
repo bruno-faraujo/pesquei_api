@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResetPassword;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -117,5 +122,64 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return $request->user();
+    }
+
+    private function generateRandomToken(int $bytes)
+    {
+        $token = random_bytes($bytes);
+        return bin2hex($token);
+    }
+
+
+    // falta terminar:
+    // enviar email, validar token por url, etc
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $token = $this->generateRandomToken(32);
+
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token
+        ]);
+
+        Mail::to($request->email)->send(new ResetPassword($token));
+
+        return response()->json(['message' => 'Instructions sent over to '. $request->email . ' with token as: '. $token], 200);
+
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'password' => 'required|string'
+        ]);
+
+        $token = DB::table('password_resets')->where('token', $request->token);
+
+        if (is_null($token->first())) {
+            return response()->json(['message' => 'Token inválido'], 401);
+        }
+
+        try {
+            $user = User::where('email', $token->first()->email)->firstOrFail();
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['message' => 'Usuário inválido'], 401);
+        }
+
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+        $token->delete();
+
+        return response()->json(['message' => 'Senha alterada com sucesso']);
+
+
     }
 }
