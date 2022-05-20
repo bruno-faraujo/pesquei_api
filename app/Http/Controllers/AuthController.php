@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\ResetPassword;
 use App\Models\User;
-use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -87,9 +85,10 @@ class AuthController extends Controller
          */
         $request->validate([
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string',
-            'name' => 'required|string'
+            'password' => 'required|string|confirmed|min:6',
+            'name' => 'required|string|max:50'
         ]);
+
 
         /*
          * Cria o usuário a partir dos dados validados
@@ -105,6 +104,7 @@ class AuthController extends Controller
          * Retorna as informações do usuário criado com o token de acesso
          */
         $token = $user->createToken('RegisterToken')->plainTextToken;
+
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
@@ -131,8 +131,6 @@ class AuthController extends Controller
     }
 
 
-    // falta terminar:
-    // enviar email, validar token por url, etc
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -148,21 +146,21 @@ class AuthController extends Controller
 
         Mail::to($request->email)->send(new ResetPassword($token));
 
-        return response()->json(['message' => 'Instructions sent over to '. $request->email . ' with token as: '. $token], 200);
-
+        return response()->json(['message' => 'Instruções para a recuperação da senha foram enviadas para o endereço ' . $request->email], 200);
     }
+
 
     public function changePassword(Request $request)
     {
         $request->validate([
             'token' => 'required',
-            'password' => 'required|string'
+            'password' => 'required|string|confirmed|min:6'
         ]);
 
         $token = DB::table('password_resets')->where('token', $request->token);
 
         if (is_null($token->first())) {
-            return response()->json(['message' => 'Token inválido'], 401);
+            return response()->json(['message' => 'Requisição inválida'], 401);
         }
 
         try {
@@ -176,7 +174,9 @@ class AuthController extends Controller
 
         $user->password = bcrypt($request->password);
         $user->save();
-        $token->delete();
+
+        DB::table('password_resets')->where('email', $token->first()->email)->delete();
+
 
         return response()->json(['message' => 'Senha alterada com sucesso']);
 
