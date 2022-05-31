@@ -16,7 +16,7 @@ class PontoController extends Controller
     {
         $pontos = auth()->user()->pontos()->get();
         if ($pontos->isEmpty()) {
-            return response()->json(['message' => 'Nenhum ponto encontrado'], 400);
+            return response()->json(['message' => 'Nenhum ponto de pesca cadastrado.'], 400);
         }
 
         return response()->json($pontos, 200);

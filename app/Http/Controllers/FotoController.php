@@ -36,6 +36,7 @@ class FotoController extends Controller
         }
 
         return $pescado->getMedia()->all();
+     //   return $pescado->getMedia()->all();
 
     }
 
@@ -59,20 +60,25 @@ class FotoController extends Controller
         return $media;
     }
 
-    public function novaFoto(Request $request)
+    public function novaFoto(Request $request, $pescado_id)
     {
         /*
         * Validação dos campos
          */
         $request->validate([
             'ponto_id' => 'required|integer',
-            'pescado_id' => 'required|integer',
+            'pescado_id' => 'integer',
             'foto' => 'required|mimes:jpeg,png|max:100000'
         ]);
 
         try {
             $ponto = auth()->user()->pontos()->findOrFail($request->ponto_id);
-            $pescado = $ponto->pescados()->findOrFail($request->pescado_id);
+            if (isset($request->pescado_id)) {
+                $pescado = $ponto->pescados()->findOrFail($request->pescado_id);
+            } else {
+                $pescado = $ponto->pescados()->findOrFail($pescado_id);
+            }
+
         }
         catch (ModelNotFoundException)
         {
@@ -133,5 +139,54 @@ class FotoController extends Controller
         $media->delete();
 
         return response()->json(['message' => 'A foto foi apagada com sucesso'], 200);
+    }
+
+    public function galeriaPescador()
+    {
+        try {
+            $pontos = auth()->user()->pontos()->get();
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(['message' => 'Requisição inválida'], 406);
+        }
+
+        $collection = collect();
+
+        foreach ($pontos as $ponto) {
+
+            foreach ($ponto->pescados->all() as $pescado) {
+
+                $peixe = $pescado->peixe;
+
+                foreach ($pescado->getMedia() as $media) {
+
+                    $id = $media->id;
+                    $urlImg = $media->getUrl();
+                    $urlThumb = $media->getUrl('thumb');
+                    $dataImg = $media->updated_at;
+
+                    $collection->push([
+                        'media' => [
+                            'id' => $id,
+                            'urlImg' => $urlImg,
+                            'urlThumb' => $urlThumb,
+                            'dataImg' => $dataImg
+                        ],
+                        'dados' => [
+                            'peixe' => $peixe->nome,
+                            'comprimento' => $pescado->comprimento,
+                            'peso' => $pescado->peso,
+                            'ponto' => $ponto->nome
+                        ]
+                    ]);
+
+                }
+            };
+
+        }
+
+        return response()->json($collection->sortByDesc('media.dataImg')->values()->all());
+      //  return response()->json($collection->sortByDesc('contagem')->values()->take(6));
     }
 }

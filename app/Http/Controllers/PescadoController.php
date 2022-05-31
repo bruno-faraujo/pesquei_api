@@ -6,6 +6,7 @@ use App\Models\Peixe;
 use App\Models\Pescado;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\FotoController;
 
 class PescadoController extends Controller
 {
@@ -46,7 +47,8 @@ class PescadoController extends Controller
             'ponto_id' => 'required|integer',
             'peixe_id' => 'required|integer',
             'comprimento' => 'integer',
-            'peso' => 'integer'
+            'peso' => 'integer',
+            'foto' => 'mimes:jpeg,png|max:100000'
         ]);
 
         try {
@@ -61,9 +63,13 @@ class PescadoController extends Controller
         $pescado = new Pescado();
         $pescado->ponto()->associate($ponto);
         $pescado->peixe()->associate($peixe);
+        $pescado->peso = $request->peso;
+        $pescado->comprimento = $request->comprimento;
         $pescado->save();
 
-        return response()->json(['message' => 'Pescado cadastrado com sucesso'], 201);
+        (new FotoController)->novaFoto($request, $pescado->id);
+
+        return response()->json(['message' => 'Peixe cadastrado com sucesso'], 201);
     }
 
     public function updatePescado(Request $request, $ponto_id, $pescado_id)

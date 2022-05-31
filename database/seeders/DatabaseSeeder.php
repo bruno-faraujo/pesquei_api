@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Peixe::factory(15)->create();
         \App\Models\Ponto::factory(1)->create();
         \App\Models\Pescado::factory(5)->create();
+        $this->call(MunicipioSeeder::class);
     }
 }

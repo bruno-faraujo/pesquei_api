@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ResetPassword;
+use App\Models\Peixe;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -33,9 +34,7 @@ class AuthController extends Controller
          */
         try {
             $user = User::where('email', $request->email)->firstOrFail();
-        }
-        catch (ModelNotFoundException)
-        {
+        } catch (ModelNotFoundException) {
             return response()->json(['message' => 'E-mail não encontrado na base de dados.'], 401);
         }
 
@@ -78,7 +77,7 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register (Request $request)
+    public function register(Request $request)
     {
         /*
          * Validação dos campos da request
@@ -165,9 +164,7 @@ class AuthController extends Controller
 
         try {
             $user = User::where('email', $token->first()->email)->firstOrFail();
-        }
-        catch (ModelNotFoundException)
-        {
+        } catch (ModelNotFoundException) {
             return response()->json(['message' => 'Usuário inválido'], 401);
         }
 
@@ -179,7 +176,48 @@ class AuthController extends Controller
 
 
         return response()->json(['message' => 'Senha alterada com sucesso']);
+    }
 
+    public function getStatusPescador()
+    {
+
+        try {
+            $pescador = auth()->user();
+        } catch (ModelNotFoundException) {
+            return response()->json(['message' => 'Requisição inválida'], 401);
+        }
+
+        $totalPontos = $pescador->pontos()->count();
+        $pescados = 0;
+        $peixesArray = collect();
+
+
+        foreach ($pescador->pontos()->get() as $ponto) {
+            $pescados += $ponto->pescados()->count();
+            foreach ($ponto->pescados()->get() as $pescado) {
+                $peixesArray->push($pescado->peixe->id);
+            }
+        }
+
+        $key = $peixesArray->countBy()->take(1)->keys();
+        if (count($key) === 0) {
+
+            $peixeMaisPescado['nome'] = 0;
+            $peixeMaisPescado['quantidade'] = 0;
+
+        } else {
+            $peixeMaisPescado['nome'] = Peixe::find($key)->first()->nome;
+            $peixeMaisPescado['quantidade'] = $peixesArray->countBy()->take(1)[$key[0]];
+        }
+
+        return response()->json([
+            'pontos_registrados' => $totalPontos,
+            'peixes_registrados' => $pescados,
+            'peixe_mais_pescado' => $peixeMaisPescado['nome'],
+            'peixe_mais_pescado_qtd' => $peixeMaisPescado['quantidade']
+        ]);
 
     }
+
+
 }

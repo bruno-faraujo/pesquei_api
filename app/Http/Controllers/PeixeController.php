@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Peixe;
 use Illuminate\Http\Request;
 
 class PeixeController extends Controller
 {
     public function getPeixes()
     {
-        // Terminar...
+        $peixes = Peixe::all()->sortBy(['nome']);
+        return response()->json($peixes);
     }
 
     public function getPeixe($id)

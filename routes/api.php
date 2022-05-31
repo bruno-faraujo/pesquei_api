@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\ClimaController;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\PeixeController;
 use App\Http\Controllers\PescadoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -27,12 +31,26 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('reset_password', [AuthController::class, 'resetPassword']);
 Route::post('change_password', [AuthController::class, 'changePassword']);
 
+
+Route::get('galeria', [HomeController::class, 'getGallery']);
+
+Route::get('ranking_peixes_resumo', [HomeController::class, 'getPeixesRankingResumo']);
+Route::get('peixes', [PeixeController::class, 'getPeixes']);
+
+Route::post('request_clima_info', [ClimaController::class, 'getClimaInfo']);
+Route::post('request_clima_icon_url', [ClimaController::class, 'getIconUrl']);
+Route::post('request_coordenadas', [ClimaController::class, 'requestCoordenadas']);
+
+Route::get('request_siglas_estados', [MunicipioController::class, 'getListaSiglasUF']);
+Route::get('request_cidades/{uf}', [MunicipioController::class, 'getListaCidades']);
+
 /**
  * Rotas protegidas pelo middleware Auth:sanctum
  */
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('user', [AuthController::class, 'user']);
+    Route::get('status_pescador', [AuthController::class, 'getStatusPescador']);
 
     Route::get('pontos', [PontoController::class, 'getPontos']);
     Route::get('ultimo_ponto', [PontoController::class, 'ultimoPonto']);
@@ -52,5 +70,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('ponto/{ponto_id}/pescado/{pescado_id}/foto_delete/{media_id}', [FotoController::class, 'deleteFoto']);
     Route::post('ponto/{ponto_id}/pescado/{pescado_id}/foto_update/{media_id}', [FotoController::class, 'updateFoto']);
     Route::post('nova_foto', [FotoController::class, 'novaFoto']);
+    Route::get('galeria_pescador', [FotoController::class, 'galeriaPescador']);
 
 });
