@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('user', [AuthController::class, 'user']);
     Route::get('status_pescador', [AuthController::class, 'getStatusPescador']);
+    Route::post('update_user', [AuthController::class, 'updateUserProfile']);
 
     Route::get('pontos', [PontoController::class, 'getPontos']);
     Route::get('ultimo_ponto', [PontoController::class, 'ultimoPonto']);
