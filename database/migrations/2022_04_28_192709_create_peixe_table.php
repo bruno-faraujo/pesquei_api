@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('nome');
             $table->string('nome_cientifico');
             $table->string('habitat');
-            $table->timestamps();
         });
     }
 
