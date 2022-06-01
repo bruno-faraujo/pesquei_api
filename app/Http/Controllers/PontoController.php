@@ -65,8 +65,8 @@ class PontoController extends Controller
     {
         $request->validate([
             'nome' => 'required|string',
-            'latitude' => 'required|string',
-            'longitude' => 'required|string'
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
         ]);
 
         /*
@@ -83,7 +83,7 @@ class PontoController extends Controller
                     $ponto->longitude = $request->longitude;
                     auth()->user()->pontos()->save($ponto);
 
-                    return response()->json($ponto, 201);
+                    return response()->json(['message' => "O novo ponto de pesca foi cadastrado com sucesso."], 201);
                 }
 
                 return response()->json(['message' => 'Já existe um ponto cadastrado com as coordenadas informadas'], 406);

@@ -6,7 +6,6 @@ use App\Models\Peixe;
 use App\Models\Pescado;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\FotoController;
 
 class PescadoController extends Controller
 {
@@ -67,7 +66,10 @@ class PescadoController extends Controller
         $pescado->comprimento = $request->comprimento;
         $pescado->save();
 
-        (new FotoController)->novaFoto($request, $pescado->id);
+        if ($request->has('foto')) {
+            (new FotoController)->novaFoto($request, $pescado->id);
+        }
+
 
         return response()->json(['message' => 'Peixe cadastrado com sucesso'], 201);
     }

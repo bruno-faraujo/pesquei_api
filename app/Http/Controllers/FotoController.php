@@ -68,7 +68,7 @@ class FotoController extends Controller
         $request->validate([
             'ponto_id' => 'required|integer',
             'pescado_id' => 'integer',
-            'foto' => 'required|mimes:jpeg,png|max:100000'
+            'foto' => 'mimes:jpeg,png|max:100000'
         ]);
 
         try {

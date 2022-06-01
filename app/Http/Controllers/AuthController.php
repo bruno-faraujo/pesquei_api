@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -216,6 +217,46 @@ class AuthController extends Controller
             'peixe_mais_pescado' => $peixeMaisPescado['nome'],
             'peixe_mais_pescado_qtd' => $peixeMaisPescado['quantidade']
         ]);
+
+    }
+
+    public function updateUserProfile(Request $request)
+    {
+        if ($request->has("password")) {
+            $request->validate([
+                'email' => ['required',
+                    'email',
+                    Rule::unique('users')->ignoreModel($request->user())
+                ],
+                'password' => 'required|string|confirmed|min:6',
+                'name' => 'required|string|max:50'
+            ]);
+        } else {
+            $request->validate([
+                'email' => ['required',
+                    'email',
+                    Rule::unique('users')->ignoreModel($request->user())
+                ],
+                'name' => 'required|string|max:50'
+            ]);
+        }
+
+        try {
+            $user = auth()->user();
+        }
+        catch (ModelNotFoundException)
+        {
+            return response()->json(["message" => "Requisição inválida", 403]);
+        }
+
+        $user->email = $request->email;
+        $user->name = $request->name;
+        if ($request->has("password")) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+
+        return response()->json(["message" => "Dados atualizados com suceso."]);
 
     }
 
