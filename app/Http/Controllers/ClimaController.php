@@ -33,7 +33,7 @@ class ClimaController extends Controller
 
             if ($horaLeituraBd->diffInMinutes($agora) < 60) {
 
-                return response()->json($climaInfoBd);
+                return $climaInfoBd;
             }
 
         }
@@ -52,11 +52,10 @@ class ClimaController extends Controller
             if (isset($climaInfoBd)) {
                 $climaInfoBd->delete();
             }
-
         }
 
         if ($responseApiClima) {
-            return response()->json($responseApiClima);
+            return $responseApiClima;
         }
 
 
@@ -143,7 +142,7 @@ class ClimaController extends Controller
     {
         $key = env('OPENWEATHER_API_KEY');
 
-        $coordenadasRequest = Http::get('http://api.openweathermap.org/geo/1.0/direct?q='
+        $coordenadasRequest = Http::get('https://api.openweathermap.org/geo/1.0/direct?q='
             .rawurlencode($cidade)
             .','
             .rawurlencode($estado)
@@ -170,19 +169,17 @@ class ClimaController extends Controller
 
     public function requestCoordenadas(Request $request)
     {
-
         $cidade = $request->cidade;
         $estado = $request->estado;
 
         return response()->json($this->getCoordenadas($cidade, $estado));
-
     }
 
     private function getClimaInfoFromApi($lat, $lon)
     {
         $key = env('OPENWEATHER_API_KEY');
 
-        $climaRequest = Http::get('http://api.openweathermap.org/data/2.5/weather?'
+        $climaRequest = Http::get('https://api.openweathermap.org/data/2.5/weather?'
             .'lat='.$lat
             .'&lon='.$lon
             .'&appid='.$key
@@ -194,22 +191,17 @@ class ClimaController extends Controller
             return $climaRequest;
 
         }
-
         return false;
-
     }
 
     public function getIconUrl(Request $request) {
-        // http://openweathermap.org/img/wn/10d@2x.png
 
         $icon = $request->icon;
 
-        $baseIconUrl = 'http://openweathermap.org/img/wn/';
+        $baseIconUrl = 'https://openweathermap.org/img/wn/';
 
         $iconUrl = $baseIconUrl.$icon.'@4x.png';
 
         return $iconUrl;
-
-
     }
 }
