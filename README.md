@@ -11,8 +11,10 @@ O Pesquei é uma aplicação web para pescadores que frequentam locais de pescar
 - Salva os pontos de pesca com coordenadas geográficas;
 - Registra os peixes capturados nos pontos selecionados;
 - Vincula fotos dos peixes pescados;
-- Os locais de pesca registrados são privados e visíveis apenas para o usuário autenticado os criou;
+- Os locais de pesca registrados são privados e visíveis apenas para o usuário autenticado que os criou;
 - Informações meteorológicas precisas do local selecionado pelo usuário (apenas Brasil);
+- Galeria global de imagens dos últimos peixes registrados pelos usuários;
+- Galeria pessoal de fotos dos peixes do usuário.
 
 ## Informações sobre a arquitetura
 
@@ -31,8 +33,8 @@ Pré-requisitos para essa aplicação:
 -	XML PHP Extension
 -	MySQL 8.0
 -	Apache2
--	Chave de API do Google Maps
 -	Chave de API do OpenWeatherMap
+-	Conta do Gmail habilitada para uso em aplicações (SMTP)
 
 
 ## Instruções de uso
@@ -42,7 +44,11 @@ Pré-requisitos para essa aplicação:
 - Criar um usuário para a base de dados;
 - Clonar o repositório;
 - Através de um terminal de comando, acessar o diretório raiz da aplicação e executar o comando: <b>php composer.phar install</b>
-- Após a instalação das dependências, edite o arquivo <b>.env.example</b> que está no diretório raiz e preencha as informações do banco de dados, respectivo usuário, chave de API do Google Maps e chave de API do OpenWeatherMap;
+- Após a instalação das dependências, edite o arquivo <b>.env.example</b> que está no diretório raiz e preencha as informações do:<br/>
+            -- Banco de dados;<br/>
+            -- Respectivo usuário do banco de dados;<br/>
+            -- Chave de API do OpenWeatherMap;<br/>
+            -- Informações da conta de e-mail que será usada pela aplicação para enviar e-mails;<br/>
 - Após a edição, renomeie o arquivo para apenas <b>.env</b>;
 - Execute o comando: <b>php artisan key:generate</b>
 - Execute o comando: <b>php artisan migrate</b>
