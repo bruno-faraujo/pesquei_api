@@ -1,64 +1,48 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<h1 align="center">Projeto PESQUEI (API)</h2>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+## Sobre o Pesquei
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Esse projeto foi idealizado como parte do processo de desenvolvimento proposto pela disciplina Prática Profissional do curso de Análise e Desenvolvimento de Sistemas da UNINASSAU.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O Pesquei é uma aplicação web para pescadores que frequentam locais de pescaria variados e precisam manter um registro desses locais e assim saber quais são os pontos mais produtivos, além de registrar os peixes que foram capturados com fotos e informações detalhadas.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+- Salva os pontos de pesca com coordenadas geográficas;
+- Registra os peixes capturados nos pontos selecionados;
+- Vincula fotos dos peixes pescados;
+- Os locais de pesca registrados são privados e visíveis apenas para o usuário autenticado os criou;
+- Informações meteorológicas precisas do local selecionado pelo usuário (apenas Brasil);
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Informações sobre a arquitetura
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Rest API desenvolvida utilizando o framework Laravel versão 9.9.0.
 
-## Laravel Sponsors
+Pré-requisitos para essa aplicação:
+-	PHP 8.1
+-	BCMath PHP Extension
+-	Ctype PHP Extension
+-	Fileinfo PHP extension
+-	JSON PHP Extension
+-	Mbstring PHP Extension
+-	OpenSSL PHP Extension
+-	PDO PHP Extension
+-	Tokenizer PHP Extension
+-	XML PHP Extension
+-	MySQL 8.0
+-	Apache2
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-### Premium Partners
+## Instruções de uso
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Ter todos os pré-requisitos resolvidos;
+- Criar uma base de dados no MySQL;
+- Criar um usuário para a base de dados;
+- Clonar o repositório;
+- Através de um terminal de comando, acessar o diretório raiz da aplicação e executar o comando: <b>php composer.phar install</b>
+- Após a instalação das dependências, edite o arquivo <b>.env.example</b> que está no diretório raiz e preencha as informações do banco de dados e usuário;
+- Após a edição, renomeie o arquivo para apenas <b>.env</b>;
+- Execute o comando: <b>php artisan key:generate</b>
+- Execute o comando: <b>php artisan migrate</b>
+- Execute o comando: <b>php artisan db:seed</b>
+- Inicie a aplicação com o comando: <b>php artisan serve</b>
