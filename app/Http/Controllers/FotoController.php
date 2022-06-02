@@ -10,12 +10,12 @@ class FotoController extends Controller
 {
     protected function replaceOriginalImage(Media $media)
     {
-        $fotoOriginal = public_path('storage\\'.$media->id.'\\'.$media->file_name);
-        $fotoOtimizada = public_path('storage\\'.$media->id.'\\conversions\\'.$media->name.'-foto.jpg');
+        $fotoOriginal = public_path('storage/'.$media->id.'/'.$media->file_name);
+        $fotoOtimizada = public_path('storage/'.$media->id.'/conversions/'.$media->name.'-foto.jpg');
 
        if (copy($fotoOtimizada, $fotoOriginal) && unlink($fotoOtimizada))
        {
-           $media->size = filesize(public_path('storage\\'.$media->id.'\\'.$media->file_name));
+           $media->size = filesize(public_path('storage/'.$media->id.'/'.$media->file_name));
            $media->save();
 
            return true;
