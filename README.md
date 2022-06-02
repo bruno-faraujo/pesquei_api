@@ -40,7 +40,7 @@ Pré-requisitos para essa aplicação:
 - Criar um usuário para a base de dados;
 - Clonar o repositório;
 - Através de um terminal de comando, acessar o diretório raiz da aplicação e executar o comando: <b>php composer.phar install</b>
-- Após a instalação das dependências, edite o arquivo <b>.env.example</b> que está no diretório raiz e preencha as informações do banco de dados e usuário;
+- Após a instalação das dependências, edite o arquivo <b>.env.example</b> que está no diretório raiz e preencha as informações do banco de dados, respectivo usuário, chave de API do Google Maps e chave de API do Open Weather Map;
 - Após a edição, renomeie o arquivo para apenas <b>.env</b>;
 - Execute o comando: <b>php artisan key:generate</b>
 - Execute o comando: <b>php artisan migrate</b>
