@@ -142,7 +142,7 @@ class ClimaController extends Controller
     {
         $key = env('OPENWEATHER_API_KEY');
 
-        $coordenadasRequest = Http::get('https://api.openweathermap.org/geo/1.0/direct?q='
+        $coordenadasRequest = Http::get('http://api.openweathermap.org/geo/1.0/direct?q='
             .rawurlencode($cidade)
             .','
             .rawurlencode($estado)
@@ -160,10 +160,8 @@ class ClimaController extends Controller
                 'lat' => $lat,
                 'lon' => $lon
             ];
-
             return $response;
         }
-
         return false;
     }
 
@@ -179,7 +177,7 @@ class ClimaController extends Controller
     {
         $key = env('OPENWEATHER_API_KEY');
 
-        $climaRequest = Http::get('https://api.openweathermap.org/data/2.5/weather?'
+        $climaRequest = Http::get('http://api.openweathermap.org/data/2.5/weather?'
             .'lat='.$lat
             .'&lon='.$lon
             .'&appid='.$key
@@ -187,9 +185,7 @@ class ClimaController extends Controller
             .'&lang=pt_br');
 
         if ($climaRequest->successful()) {
-
             return $climaRequest;
-
         }
         return false;
     }
