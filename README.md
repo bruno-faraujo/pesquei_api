@@ -16,6 +16,9 @@ O Pesquei é uma aplicação web para pescadores que frequentam locais de pescar
 - Galeria global de imagens dos últimos peixes registrados pelos usuários;
 - Galeria pessoal de fotos dos peixes do usuário.
 
+## Apresentação do Projeto (Vídeo)
+https://youtu.be/eo9IygGEhTU
+
 ## Informações sobre a arquitetura
 
 Rest API desenvolvida utilizando o framework Laravel versão 9.9.0.
