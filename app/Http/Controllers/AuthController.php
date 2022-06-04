@@ -200,15 +200,17 @@ class AuthController extends Controller
             }
         }
 
-        $key = $peixesArray->countBy()->take(1)->keys();
-        if (count($key) === 0) {
+        $key = $peixesArray->countBy()->sortDesc()->keys()->first();
 
-            $peixeMaisPescado['nome'] = 0;
+        if (empty($key)) {
+
+            $peixeMaisPescado['nome'] = "";
             $peixeMaisPescado['quantidade'] = 0;
 
         } else {
-            $peixeMaisPescado['nome'] = Peixe::find($key)->first()->nome;
-            $peixeMaisPescado['quantidade'] = $peixesArray->countBy()->take(1)[$key[0]];
+
+            $peixeMaisPescado['nome'] = Peixe::find($key)->nome;
+            $peixeMaisPescado['quantidade'] = $peixesArray->countBy()->sortDesc()->values()->first();
         }
 
         return response()->json([
