@@ -29,8 +29,6 @@ use App\Http\Controllers\PontoController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('reset_password', [AuthController::class, 'resetPassword']);
-Route::post('change_password', [AuthController::class, 'changePassword']);
-
 
 Route::get('galeria', [HomeController::class, 'getGallery']);
 
@@ -48,6 +46,7 @@ Route::get('request_cidades/{uf}', [MunicipioController::class, 'getListaCidades
  * Rotas protegidas pelo middleware Auth:sanctum
  */
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('change_password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('user', [AuthController::class, 'user']);
     Route::get('status_pescador', [AuthController::class, 'getStatusPescador']);
