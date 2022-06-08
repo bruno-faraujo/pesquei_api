@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
@@ -54,12 +56,19 @@ class AuthController extends Controller
          * Retorna dados do usuário autenticado com o token de acesso
          */
         $token = $user->createToken('LoginToken')->plainTextToken;
+
+        return response()->json([
+            'user' => auth()->user(),
+            'token' => $token
+            ]);
+
+        /*
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
             'name' => $user->name,
             'token' => $token
-        ]);
+        ]);*/
     }
 
 
@@ -68,7 +77,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
+
+        $request->user()->tokens()->delete();
         Auth::guard('web')->logout();
         return response()->json(['message' => 'Usuário desconectado com sucesso.'], 200);
     }
@@ -106,9 +116,11 @@ class AuthController extends Controller
         $token = $user->createToken('RegisterToken')->plainTextToken;
 
         return response()->json([
+            'user' => [
             'id' => $user->id,
             'name' => $user->name,
-            'email' => $user->email,
+            'email' => $user->email
+            ],
             'token' => $token
         ], 201);
 
@@ -121,7 +133,8 @@ class AuthController extends Controller
      */
     public function user(Request $request)
     {
-        return $request->user();
+        if (auth()->user() === $request->user())
+        return response()->json(['user' => $request->user()]);
     }
 
     private function generateRandomToken(int $bytes)
@@ -258,7 +271,10 @@ class AuthController extends Controller
         }
         $user->save();
 
-        return response()->json(["message" => "Dados atualizados com suceso."]);
+        return response()->json([
+            "message" => "Dados atualizados com suceso.",
+            "user" => $user
+            ]);
 
     }
 

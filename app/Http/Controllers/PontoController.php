@@ -14,7 +14,7 @@ class PontoController extends Controller
      */
     public function getPontos()
     {
-        $pontos = auth()->user()->pontos()->get();
+        $pontos = auth()->user()->pontos()->sortBy('nome')->all();
         if ($pontos->isEmpty()) {
             return response()->json(['message' => 'Nenhum ponto de pesca cadastrado.'], 400);
         }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Clima;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -13,55 +12,48 @@ class ClimaController extends Controller
 
     public function getClimaInfo(Request $request)
     {
-        try {
 
-            $climaInfoBd = Clima::where('estado', $request->estado)
-                ->where('cidade', $request->cidade)
-                ->firstOrFail();
+        $climaInfoBd = Clima::
+        where('estado', $request->estado)
+            ->where('cidade', $request->cidade)
+            ->latest()
+            ->first();
 
-        } catch (ModelNotFoundException) {
+        if (empty($climaInfoBd)) {
 
+            // Cria uma nova entrada de clima no banco de dados
 
             $coordenadas = $this->getCoordenadas($request->cidade, $request->estado);
+            $requestClima = $this->getClimaInfoFromApi($coordenadas['lat'], $coordenadas['lon']);
+            $climaInfo = $this->saveNewClimaInfo($coordenadas['cidade'], $coordenadas['estado'], $requestClima);
 
-        }
+            return $climaInfo;
 
-        if (isset($climaInfoBd)) {
+        } else {
 
             $horaLeituraBd = Carbon::createFromTimestamp($climaInfoBd->dt);
             $agora = Carbon::now();
 
             if ($horaLeituraBd->diffInMinutes($agora) < 60) {
+                // Diferença de tempo é menor que 60 minutos
+                // Retorna a ocorrencia atual do banco de dados
 
                 return $climaInfoBd;
-            }
 
-        }
+            } else {
+                // Diferença de tempo é maior que 60 minutos
+                // Criar uma nova request a partir da API OpenWeatherMaps e SUBSTITUIR o valor salvo no banco de dados
 
-        if (!isset($coordenadas)) {
-            $coordenadas = $this->getCoordenadas($request->cidade, $request->estado);
-        }
-
-        // faz nova request pra api do clima, salva no banco de dados e depois retorna a do banco de dados
-        $requestApiClima = $this->getClimaInfoFromApi($coordenadas['lat'], $coordenadas['lon']);
-
-        if ($requestApiClima) {
-
-            $responseApiClima = $this->saveNewClimaInfo($coordenadas['cidade'], $coordenadas['estado'], $requestApiClima);
-
-            if (isset($climaInfoBd)) {
+                $requestCoordenadas = $this->getCoordenadas($climaInfoBd->cidade, $climaInfoBd->estado);
+                $climaInfoFromApi = $this->getClimaInfoFromApi($requestCoordenadas['lat'], $requestCoordenadas['lon']);
+                $newClimaInfo = $this->saveNewClimaInfo($requestCoordenadas['cidade'], $requestCoordenadas['estado'], $climaInfoFromApi);
                 $climaInfoBd->delete();
+
+                return $newClimaInfo;
             }
         }
-
-        if ($responseApiClima) {
-            return $responseApiClima;
-        }
-
-
-        return response()->json(['message' => 'Requisição inválida']);
-
     }
+
 
     private function saveNewClimaInfo($cidade, $estado, $climaInfoFromApi)
     {
@@ -89,11 +81,7 @@ class ClimaController extends Controller
             $climaInfo->main_feels_like = $climaInfoFromApi['main']['feels_like'];
         }
         if (isset($climaInfoFromApi['main']['pressure'])) {
-            if (isset($climaInfoFromApi['main']['grnd_level'])) {
-                $climaInfo->main_pressure = $climaInfoFromApi['main']['grnd_level'];
-            } else {
-                $climaInfo->main_pressure = $climaInfoFromApi['main']['pressure'];
-            }
+            $climaInfo->main_pressure = $climaInfoFromApi['main']['pressure'];
         }
         if (isset($climaInfoFromApi['main']['humidity'])) {
             $climaInfo->main_humidity = $climaInfoFromApi['main']['humidity'];
@@ -143,11 +131,11 @@ class ClimaController extends Controller
         $key = env('OPENWEATHER_API_KEY');
 
         $coordenadasRequest = Http::get('http://api.openweathermap.org/geo/1.0/direct?q='
-            .rawurlencode($cidade)
-            .','
-            .rawurlencode($estado)
-            .'&limit=1&appid='
-            .$key);
+            . rawurlencode($cidade)
+            . ','
+            . rawurlencode($estado)
+            . '&limit=1&appid='
+            . $key);
 
         if ($coordenadasRequest->successful()) {
 
@@ -178,11 +166,11 @@ class ClimaController extends Controller
         $key = env('OPENWEATHER_API_KEY');
 
         $climaRequest = Http::get('http://api.openweathermap.org/data/2.5/weather?'
-            .'lat='.$lat
-            .'&lon='.$lon
-            .'&appid='.$key
-            .'&units=metric'
-            .'&lang=pt_br');
+            . 'lat=' . $lat
+            . '&lon=' . $lon
+            . '&appid=' . $key
+            . '&units=metric'
+            . '&lang=pt_br');
 
         if ($climaRequest->successful()) {
             return $climaRequest;
@@ -190,13 +178,14 @@ class ClimaController extends Controller
         return false;
     }
 
-    public function getIconUrl(Request $request) {
+    public function getIconUrl(Request $request)
+    {
 
         $icon = $request->icon;
 
         $baseIconUrl = 'https://openweathermap.org/img/wn/';
 
-        $iconUrl = $baseIconUrl.$icon.'@4x.png';
+        $iconUrl = $baseIconUrl . $icon . '@4x.png';
 
         return $iconUrl;
     }
