@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('cidade');
             $table->string('estado');
+            $table->integer('cidade_id')->nullable();
             $table->integer('dt');
             $table->integer('weather_id')->nullable();
             $table->string('weather_main')->nullable();
