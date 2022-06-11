@@ -19,7 +19,7 @@ class PescadoController extends Controller
             return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
-        return response()->json($ponto->pescados()->get());
+        return response()->json($ponto->pescados()->with('peixe')->get());
     }
 
     public function getPescado($ponto_id, $pescado_id)

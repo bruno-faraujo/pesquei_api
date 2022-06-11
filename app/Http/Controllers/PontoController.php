@@ -14,8 +14,10 @@ class PontoController extends Controller
      */
     public function getPontos()
     {
-        $pontos = auth()->user()->pontos()->sortBy('nome')->all();
-        if ($pontos->isEmpty()) {
+
+        $pontos = auth()->user()->pontos()->orderBy('nome')->get();
+
+        if (empty($pontos)) {
             return response()->json(['message' => 'Nenhum ponto de pesca cadastrado.'], 400);
         }
 
@@ -52,6 +54,7 @@ class PontoController extends Controller
         {
             return response()->json(['message' => 'Ponto inválido'], 406);
         }
+
         return response()->json($ponto, 200);
 
     }
@@ -126,12 +129,6 @@ class PontoController extends Controller
 
         foreach ($ponto->pescados()->get() as $pescado)
         {
-            foreach ($pescado->fotos()->get() as $foto)
-            {
-                // Apaga a foto
-                $foto->delete();
-            }
-            // Apaga o pescado
             $pescado->delete();
         }
         // Finalmente apaga o ponto

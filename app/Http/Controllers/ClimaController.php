@@ -62,6 +62,9 @@ class ClimaController extends Controller
         $climaInfo->estado = $estado;
         $climaInfo->dt = $climaInfoFromApi['dt'];
 
+        if (isset($climaInfoFromApi['id'])) {
+            $climaInfo->cidade_id = $climaInfoFromApi['id'];
+        }
         if (isset($climaInfoFromApi['weather'][0]['id'])) {
             $climaInfo->weather_id = $climaInfoFromApi['weather'][0]['id'];
         }
