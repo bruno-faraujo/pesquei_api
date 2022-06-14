@@ -26,14 +26,31 @@ class PescadoController extends Controller
     {
         try {
             $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
-            $pescado = $ponto->pescados()->findOrFail($pescado_id);
+            $pescado = $ponto->pescados()->with('peixe')->findOrFail($pescado_id);
         }
         catch (ModelNotFoundException)
         {
             return response()->json(['message' => 'Requisição inválida'], 400);
         }
 
-        return response()->json($pescado);
+        $result = collect([
+            "id" => $pescado->id,
+            "comprimento" => $pescado->comprimento,
+            "peso" => $pescado->peso,
+            "updated_at" => $pescado->updated_at,
+            "peixe" => [
+                "nome" => $pescado->peixe->nome,
+                "nome_cientifico" => $pescado->peixe->nome_cientifico,
+                "habitat" => $pescado->peixe->habitat
+            ],
+            "media" => [
+                "url" => $pescado->getFirstMediaUrl(),
+                 "thumb" => $pescado->getFirstMediaUrl('default', 'thumb')
+            ]
+        ]);
+
+
+        return response()->json($result);
 
     }
 
@@ -93,20 +110,13 @@ class PescadoController extends Controller
     {
         try {
             $ponto = auth()->user()->pontos()->findOrFail($ponto_id);
-            $pescado = $ponto->pescado()->findOrFail($pescado_id);
+            $pescado = $ponto->pescados()->findOrFail($pescado_id);
         }
         catch (ModelNotFoundException)
         {
             return response()->json(['message' => 'Requisição inválida'], 406);
         }
 
-        // Apaga as fotos
-        foreach ($pescado->getMedia()->all() as $foto)
-        {
-            $foto->delete();
-        }
-
-        // Apaga o pescado
         $pescado->delete();
 
         return response()->json(['message' => 'O pescado foi apagado com sucesso'], 200);

@@ -109,7 +109,7 @@ class PontoController extends Controller
         }
         $ponto->update($request->all());
 
-        return response()->json($ponto, 200);
+        return response()->json(["message" => "As alterações foram salvas com sucesso."], 200);
     }
 
     /**
